@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { getLyrics, getSong } from "genius-lyrics-api";
 
-//import { getMusicList } from "./Music.services";
+import { Button, FormText, Image } from "react-bootstrap";
+
+import { getMusicList } from "./Music.services";
 const Music = () => {
   const [musicdata, setMusicData] = useState([]);
+  const [data, setData] = useState([]);
   var settings = {
     dots: true,
     infinite: true,
@@ -12,16 +15,16 @@ const Music = () => {
     slidesToScroll: 1,
   };
 
-  // useEffect(() => {
-  //   getMusicList(setMusicData);
-  // }, []);
+  useEffect(() => {
+    getMusicList(setData);
+  }, []);
 
   //console.log("title", musicdata);
 
   const options = {
     apiKey: "Q4zP-L6VbpAOnIKULBoWIOkL1j556fdRN64TXHAz_YZ01fwpyB0NGfl466FaxRvn",
-    title: "grenade",
-    artist: "Bruno",
+    title: "Grenade",
+    artist: "Bruno Mars",
     client_id:
       "aQksVr6xt5tMbr-XC4Xr0GB16cKeZ4m4u0EWKgX2YyMLoNPaFeO4j5MJYJ_yJXJT",
     client_secret:
@@ -31,8 +34,12 @@ const Music = () => {
   };
 
   //const R = getLyrics(options).then((lyrics) => console.log(lyrics));
-
-  getSong(options).then((song) => console.log(song.albumArt, song.lyrics));
+  function ShowMusic() {
+    getSong(options).then((song) =>
+      setMusicData([song.albumArt, song.title, song.lyrics])
+    );
+  }
+  // getSong(options).then((song) => console.log(song.albumArt, song.lyrics));
 
   return (
     <>
@@ -51,7 +58,29 @@ const Music = () => {
           </span>
         </div>
       </div>
-      <div>{musicdata}</div>
+      <div>
+        <Button
+          onClick={() => {
+            ShowMusic();
+            console.log(musicdata);
+          }}
+        >
+          Test
+        </Button>
+      </div>
+      <div>
+        {musicdata !== null && musicdata[0] && (
+          <Image
+            thumbnail
+            src={musicdata[0]}
+            width="200px"
+            height="200px"
+            alt=""
+          />
+        )}
+      </div>
+      <div style={{ fontWeight: "bold" }}>{musicdata[1]}</div>
+      <div style={{ whiteSpace: "pre-wrap" }}>{musicdata[2]}</div>
     </>
   );
 };

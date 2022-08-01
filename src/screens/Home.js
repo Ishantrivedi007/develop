@@ -1,6 +1,6 @@
 import React from "react";
 import "./Home.css";
-import chill from "./../chill.png";
+//import chill from "./../chill.png";
 import {
   Navbar,
   Container,
@@ -29,6 +29,8 @@ const Home = () => {
               <Nav.Link href="/movies">Movies</Nav.Link>
               <Nav.Link href="/music">Music</Nav.Link>
               <Nav.Link href="/movies">Shop</Nav.Link>
+              <Nav.Link href="/movies">About us</Nav.Link>
+              <Nav.Link href="/movies">Contact</Nav.Link>
             </Nav>
 
             <Button variant="outline-success">Search</Button>

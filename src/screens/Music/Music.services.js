@@ -92,7 +92,7 @@ import axios from "axios";
 //   .catch((error) => {
 //     console.log("error " + error);
 //   });
-export const getMusicList = async (setMusicData) => {
+export const getMusicList = async (setData) => {
   try {
     const access_token =
       "Bearer Q4zP-L6VbpAOnIKULBoWIOkL1j556fdRN64TXHAz_YZ01fwpyB0NGfl466FaxRvn";
