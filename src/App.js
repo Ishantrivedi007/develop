@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import Home from "./screens/Home";
+import Home from "./screens/Home/Home";
 import Music from "./screens/Music/Music";
 import "bootstrap/dist/css/bootstrap.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Movies from "./screens/Movies/Movies";
-
-// Import css files
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import Header from "./components/Header";
+import MovieList from "./screens/Movies/MovieList";
+import TVList from "./screens/Movies/TVList";
 
 function App() {
   return (
     <div className="App">
-      <Home />
+      <Header />
       <BrowserRouter>
         <Routes>
-          {/* <Route path="/home" exact element/> */}
+          <Route path="/" exact element={<Home />} />
           <Route path="/movies" exact element={<Movies />} />
+          <Route path="/movielist" exact element={<MovieList />} />
+          <Route path="/tvlist" exact element={<TVList />} />
           <Route path="/music" exact element={<Music />} />
         </Routes>
       </BrowserRouter>
