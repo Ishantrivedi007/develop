@@ -1,29 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-  getLatestMovies,
   getNowPlayingMovies,
-  getPopularMoviesList,
   getTopRatedMovies,
-  getUpcomingMovies,
-  // getMostPopularTVSeries,
   getTopRatedTVSeries,
 } from "./Movies.services";
 import {
   Container,
   Table,
   Card,
-  Carousel,
   Button,
   Col,
   CardGroup,
-  Form,
   Modal,
   FormControl,
   Spinner,
+  Row,
 } from "react-bootstrap";
-import moment from "moment";
-import Slider from "react-slick";
 import {
   LineChart,
   Line,
@@ -35,33 +28,26 @@ import {
   Cell,
   ResponsiveContainer,
   Tooltip,
+  Legend,
 } from "recharts";
 import "./Movies.styles.css";
-import { useParams } from "react-router";
 import axios from "axios";
-import { Formik } from "formik";
 
 const Movies = () => {
-  const { id } = useParams();
-  const action = window.location.pathname.split("/")[3];
-  //const history = useHistory();
   const [moviedata, setMovieData] = useState([]);
-  const [popularMoviesdata, setPopularMovieData] = useState([]);
-  const [upcomingMoviesdata, setUpcomingMoviesData] = useState([]);
+
   const [topRatedMoviesdata, setTopRatedMoviesData] = useState([]);
   const [nowPlayingMoviesdata, setNowPlayingMoviesData] = useState([]);
-  const [latestMoviesdata, setLatestMoviesData] = useState([]);
-  const [mostPopularTVSeries, setMostPopularTVSeries] = useState([]);
+
   const [topRatedTVSeries, setTopRatedTVSeries] = useState([]);
-  const [selectedFilters, setSelectedFilters] = React.useState();
+
   const [searchQuery, setSearchQuery] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [index, setIndex] = useState(0);
   const [show, setShow] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [open, setOpen] = useState(false);
-  const [dat, SetDat] = useState("");
+  const [tvModalOpen, setTVModalOpen] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -71,54 +57,19 @@ const Movies = () => {
   const handleShowTwo = () => setShowModal(true);
   const handleCloseThree = () => setOpen(false);
   const handleShowThree = () => setOpen(true);
-  const handleSelect = (selectedIndex, e) => {
-    setIndex(selectedIndex);
-  };
+  const handleCloseTV = () => setTVModalOpen(false);
+  const handleShowTV = () => setTVModalOpen(true);
 
   useEffect(() => {
-    //getMovieList(setMovieData);
-    getPopularMoviesList(setPopularMovieData);
-    getLatestMovies(setLatestMoviesData);
     getNowPlayingMovies(setNowPlayingMoviesData, setLoading);
-    getUpcomingMovies(setUpcomingMoviesData);
     getTopRatedMovies(setTopRatedMoviesData);
-    //getMostPopularTVSeries(setMostPopularTVSeries);
     getTopRatedTVSeries(setTopRatedTVSeries, setLoading);
   }, []);
 
-  // useEffect(() => {
-  //   getMovieList(searchQuery, setMovieData);
-  // }, []);
-  const data = [
-    { name: "Page A", uv: 400, pv: 2400, amt: 2400 },
-    { name: "Page B", uv: 500, pv: 2500, amt: 2500 },
-    { name: "Page C", uv: 800, pv: 2900, amt: 3000 },
-  ];
+  const Bardata = topRatedMoviesdata.slice(0, 5);
+  const NewLineData = topRatedTVSeries.slice(0, 5);
 
-  const Bardata = [
-    { name: "Geeksforgeeks", students: 400, color: "#01678e", total: 1000 },
-    {
-      name: "Technical scripter",
-      students: 700,
-      color: "#017fb1",
-      total: 2000,
-    },
-    { name: "Geek-i-knack", students: 200, color: "#6bafc2", total: 3000 },
-    { name: "Geek-o-mania", students: 1000, color: "#96d3e3", total: 4000 },
-  ];
-
-  const barColors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#96d3e3"];
-
-  // // const renderLineChart = (
-  // //   <LineChart width={600} height={300} data={data}>
-  // //     <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-  // //     <CartesianGrid stroke="#ccc" />
-  // //     <XAxis dataKey="name" />
-  // //     <YAxis />
-  // //   </LineChart>
-  // );
-  //console.log("latest", topRatedTVSeries);
-  //console.log("NPid", topRatedMoviesdata);
+  const barColors = ["#1f77b4", "#ff7f0e", "#F2B37C", "#96d3e3", "#EF97AB"];
 
   //Another method to make an API CALL---
   function SearchForMovie(e) {
@@ -139,14 +90,6 @@ const Movies = () => {
         });
     }
   }
-
-  // useEffect(
-  //   (e) => {
-  //     getMovieList(searchQuery, SetDat);
-  //   },
-  //   [searchQuery]
-  // );
-  console.log("mus", moviedata);
 
   return (
     <>
@@ -241,11 +184,11 @@ const Movies = () => {
             <span>{nowPlayingMoviesdata[2]?.overview}</span>
           </Col>
           <Col>
-            <span>Rating by Users: </span>
+            <span style={{ fontWeight: "bold" }}>Rating by Users: </span>
             <span>{nowPlayingMoviesdata[2]?.vote_average}</span>
           </Col>
           <Col>
-            <span>Release Date: </span>
+            <span style={{ fontWeight: "bold" }}>Release Date: </span>
             <span>{nowPlayingMoviesdata[2]?.release_date}</span>
           </Col>
         </Modal.Body>
@@ -276,16 +219,47 @@ const Movies = () => {
             <span>{nowPlayingMoviesdata[3]?.overview}</span>
           </Col>
           <Col>
-            <span>Rating by Users: </span>
+            <span style={{ fontWeight: "bold" }}>Rating by Users: </span>
             <span>{nowPlayingMoviesdata[3]?.vote_average}</span>
           </Col>
           <Col>
-            <span>Release Date: </span>
+            <span style={{ fontWeight: "bold" }}>Release Date: </span>
             <span>{nowPlayingMoviesdata[3]?.release_date}</span>
           </Col>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseThree}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={tvModalOpen} onHide={handleCloseTV}>
+        <Modal.Header closeButton>
+          <Modal.Title>{topRatedTVSeries[0]?.original_name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Col>
+            {" "}
+            <img
+              src={
+                "https://image.tmdb.org/t/p/w200/" +
+                topRatedTVSeries[0]?.poster_path
+              }
+              alt=""
+              height="282.172px"
+              width="300px"
+            ></img>
+          </Col>
+          <Col>
+            <span>{topRatedTVSeries[0]?.overview}</span>
+          </Col>
+          <Col>
+            <span style={{ fontWeight: "bold" }}>Rating by Users: </span>
+            <span>{topRatedTVSeries[0]?.vote_average}</span>
+          </Col>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseTV}>
             Close
           </Button>
         </Modal.Footer>
@@ -304,15 +278,15 @@ const Movies = () => {
                 justifyContent: "center",
               }}
             >
-              <Col lg={4} className="mx-2 my-2 p-2">
+              <Col lg={6} className="mx-2 my-2 p-2">
                 <FormControl
                   id="movie_search"
                   type="text"
                   placeholder="Search your Movie"
                   onChange={(event) => {
                     setSearchQuery(event.target.value);
-                    console.log("s", searchQuery);
                   }}
+                  style={{ borderRadius: "40px" }}
                 />
               </Col>
             </Col>
@@ -333,51 +307,58 @@ const Movies = () => {
               onClick={(e) => {
                 setMovieData([]);
               }}
+              disabled={moviedata?.length === 0}
             >
               Hide Table
             </Button>
           </div>
 
           {moviedata?.length !== 0 ? (
-            <div>
-              <Table striped>
-                <thead>
-                  <tr>
-                    <th>Movie</th>
-                    <th>Release Date</th>
-                    <th>Popularity</th>
-                    <th>Avg. User Ratings</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {moviedata.slice(0, 9).map((entry, index) => (
+            <Container>
+              <Col>
+                <Table bordered hover style={{ backgroundColor: "white" }}>
+                  <thead>
                     <tr>
-                      <td>{entry.original_title}</td>
-                      <td>{entry.release_date}</td>
-                      <td>{entry.popularity}</td>
-                      <td>{entry.vote_average}</td>
+                      <th>Movie</th>
+                      <th>Release Date</th>
+                      <th>Popularity</th>
+                      <th>Avg. User Ratings</th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {moviedata.slice(0, 9).map((entry, index) => (
+                      <tr>
+                        <td>{entry.original_title}</td>
+                        <td>{entry.release_date}</td>
+                        <td>{entry.popularity}</td>
+                        <td>{entry.vote_average}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Col>
+            </Container>
           ) : null}
           {moviedata?.length === 0 ? (
             <Container>
-              <Col
-                style={{
-                  alignItems: "flex-start",
-                  justifyContent: "flex-start",
-                  alignContent: "flex-start",
-                }}
-              >
-                <span>Latest Movies</span>
-              </Col>
-              <Col>
-                <Link to={"/movielist"}>
-                  <span>View More</span>
-                </Link>
-              </Col>
+              <Row>
+                <Col>
+                  <span
+                    style={{
+                      marginRight: "900px",
+                      fontSize: 20,
+                      fontWeight: "bolder",
+                      color: "white",
+                    }}
+                  >
+                    <u> Latest Movies</u>
+                  </span>
+
+                  <Link to={"/movielist"}>
+                    <span>View More</span>
+                  </Link>
+                </Col>
+              </Row>
             </Container>
           ) : null}
           {moviedata?.length === 0 ? (
@@ -385,7 +366,7 @@ const Movies = () => {
               <CardGroup className="mx-5 my-5">
                 <Col style={{ display: "flex" }}>
                   <Col lg={3}>
-                    <Card style={{ width: "18rem" }}>
+                    <Card style={{ width: "18rem", borderRadius: "40px" }}>
                       <Card.Img
                         variant="top"
                         src={
@@ -410,7 +391,7 @@ const Movies = () => {
                     </Card>
                   </Col>
                   <Col lg={3}>
-                    <Card style={{ width: "18rem" }}>
+                    <Card style={{ width: "18rem", borderRadius: "40px" }}>
                       <Card.Img
                         variant="top"
                         src={
@@ -435,7 +416,7 @@ const Movies = () => {
                     </Card>
                   </Col>
                   <Col lg={3}>
-                    <Card style={{ width: "18rem" }}>
+                    <Card style={{ width: "18rem", borderRadius: "40px" }}>
                       <Card.Img
                         variant="top"
                         src={
@@ -460,7 +441,7 @@ const Movies = () => {
                     </Card>
                   </Col>
                   <Col lg={3}>
-                    <Card style={{ width: "18rem" }}>
+                    <Card style={{ width: "18rem", borderRadius: "40px" }}>
                       <Card.Img
                         variant="top"
                         src={
@@ -489,28 +470,144 @@ const Movies = () => {
             </div>
           ) : null}
           {moviedata?.length === 0 ? (
+            <Container fluid>
+              <Col className="flex">
+                <Col lg className="mx-2 my-3">
+                  <Card style={{ borderRadius: 43 }}>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart
+                        width={500}
+                        height={300}
+                        data={NewLineData}
+                        margin={{
+                          top: 5,
+                          right: 30,
+                          left: 20,
+                          bottom: 5,
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+
+                        <YAxis
+                          label={{
+                            value: "Popularity",
+                            angle: "-90",
+                            position: "inside-left",
+                          }}
+                          dx={10}
+                          // dy={20}
+                          // minTickGap={-100}
+                          tickMargin={10}
+                        />
+                        <Tooltip />
+                        <Legend />
+                        <Line
+                          type="monotone"
+                          dataKey="popularity"
+                          stroke="#8884d8"
+                          activeDot={{ r: 8 }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="vote_average"
+                          name="Avg. User Rating"
+                          stroke="#82ca9d"
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                    <Card.Text style={{ fontWeight: "bolder" }}>
+                      <u>"New TV Shows on the Block"</u>
+                    </Card.Text>
+                  </Card>
+                </Col>
+              </Col>
+            </Container>
+          ) : null}
+
+          {moviedata?.length === 0 ? (
+            <Container fluid>
+              <Col className="flex">
+                <Col lg className="mx-2 my-3">
+                  <Card style={{ borderRadius: 43 }}>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
+                        data={Bardata}
+                        width={500}
+                        height={400}
+                      >
+                        <XAxis dataKey="title" stroke="#000000" />
+                        <YAxis
+                          stroke="#000000"
+                          dataKey="popularity"
+                          label={{
+                            value: "Popularity",
+                            angle: "-90",
+                            position: "inside-left",
+                          }}
+                          dx={10}
+                          // dy={20}
+                          // minTickGap={-100}
+                          tickMargin={10}
+                        />
+                        <Tooltip
+                          wrapperStyle={{ width: 250, backgroundColor: "#ccc" }}
+                          formatter={function (popularity) {
+                            return `${popularity}`;
+                          }}
+                        />
+                        <Bar
+                          dataKey="popularity"
+                          fill="#00a0fc"
+                          stroke="#000000"
+                          strokeWidth={1}
+                        >
+                          {Bardata.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={barColors[index % 20]}
+                            />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                    <Card.Text style={{ fontWeight: "bolder" }}>
+                      <u>"Most Popular Movies of All Time"</u>
+                    </Card.Text>
+                  </Card>
+                </Col>
+              </Col>
+            </Container>
+          ) : null}
+
+          {moviedata?.length === 0 ? (
             <Container>
-              <Col
-                style={{
-                  alignItems: "flex-start",
-                  justifyContent: "flex-start",
-                  alignContent: "flex-start",
-                }}
-              >
-                <span>Latest in TV</span>
-              </Col>
-              <Col>
-                <Link to={"/tvlist"}>
-                  <span>View More</span>
-                </Link>
-              </Col>
+              <Row className="my-4">
+                <Col style={{ marginTop: "30px" }}>
+                  <span
+                    style={{
+                      marginRight: "900px",
+                      fontSize: 20,
+                      fontWeight: "bolder",
+                      color: "white",
+                    }}
+                  >
+                    <u> Latest in TV</u>
+                  </span>
+
+                  <Link to={"/tvlist"}>
+                    <span>View More</span>
+                  </Link>
+                </Col>
+              </Row>
             </Container>
           ) : null}
           {moviedata?.length === 0 ? (
             <div>
               <CardGroup className="mx-5 my-5">
                 <Col>
-                  <Card style={{ width: "18rem" }}>
+                  <Card style={{ width: "18rem", borderRadius: "40px" }}>
                     <Card.Img
                       variant="top"
                       src={
@@ -528,12 +625,14 @@ const Movies = () => {
                       <Card.Text className="overflow-cell">
                         {topRatedTVSeries[0]?.overview}
                       </Card.Text>
-                      <Button variant="primary">See Info</Button>
+                      <Button variant="primary" onClick={handleShowTV}>
+                        See Info
+                      </Button>
                     </Card.Body>
                   </Card>
                 </Col>
                 <Col>
-                  <Card style={{ width: "18rem" }}>
+                  <Card style={{ width: "18rem", borderRadius: "40px" }}>
                     <Card.Img
                       variant="top"
                       src={
@@ -556,7 +655,7 @@ const Movies = () => {
                   </Card>
                 </Col>
                 <Col>
-                  <Card style={{ width: "18rem" }}>
+                  <Card style={{ width: "18rem", borderRadius: "40px" }}>
                     <Card.Img
                       variant="top"
                       src={
@@ -579,7 +678,7 @@ const Movies = () => {
                   </Card>
                 </Col>
                 <Col>
-                  <Card style={{ width: "18rem" }}>
+                  <Card style={{ width: "18rem", borderRadius: "40px" }}>
                     <Card.Img
                       variant="top"
                       src={
@@ -606,53 +705,7 @@ const Movies = () => {
           ) : null}
         </div>
       )}
-      {moviedata?.length === 0 ? (
-        <div>
-          {" "}
-          <LineChart width={600} height={300} data={data}>
-            <Line type="monotone" dataKey="amt" stroke="#8884d8" />
-            <CartesianGrid stroke="#ccc" />
-            <XAxis dataKey="name" />
-            <YAxis dataKey="amt" />
-          </LineChart>
-        </div>
-      ) : null}
-      {/* <div>
-        {" "}
-        <LineChart width={600} height={300} data={data}>
-          <Line type="monotone" dataKey="amt" stroke="#8884d8" />
-          <CartesianGrid stroke="#ccc" />
-          <XAxis dataKey="name" />
-          <YAxis dataKey="amt" />
-        </LineChart>
-      </div> */}
-      {moviedata?.length === 0 ? (
-        <ResponsiveContainer width="95%" height={450}>
-          <BarChart
-            margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
-            data={Bardata}
-          >
-            <XAxis dataKey="name" stroke="#000000" />
-            <YAxis stroke="#000000" dataKey="students" />
-            <Tooltip
-              wrapperStyle={{ width: 100, backgroundColor: "#ccc" }}
-              formatter={function (total) {
-                return `${total}`;
-              }}
-            />
-            <Bar
-              dataKey="total"
-              fill="#00a0fc"
-              stroke="#000000"
-              strokeWidth={1}
-            >
-              {Bardata.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      ) : null}
+      <Container></Container>
     </>
   );
 };
