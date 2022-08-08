@@ -1,37 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { getLyrics, getSong } from "genius-lyrics-api";
+import { getSong } from "genius-lyrics-api";
 
 import {
   Button,
   Container,
-  Form,
   FormControl,
-  FormText,
   Image,
   Col,
   Spinner,
 } from "react-bootstrap";
 
-import { getMusicList } from "./Music.services";
 const Music = () => {
   const [musicdata, setMusicData] = useState([]);
-  const [data, setData] = useState([]);
   const [loading, setloading] = useState(false);
   const [searchSong, setSearchSong] = useState("");
   const [searchArtist, setSearchArtist] = useState("");
-  var settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
-
-  useEffect(() => {
-    getMusicList(setData);
-  }, []);
-
-  //console.log("title", musicdata);
 
   const options = {
     apiKey: "Q4zP-L6VbpAOnIKULBoWIOkL1j556fdRN64TXHAz_YZ01fwpyB0NGfl466FaxRvn",
@@ -45,14 +28,12 @@ const Music = () => {
     optimizeQuery: true,
   };
 
-  //const R = getLyrics(options).then((lyrics) => console.log(lyrics));
   function ShowMusic() {
     setloading(true);
     getSong(options)
       .then((song) => setMusicData([song.albumArt, song.title, song.lyrics]))
       .finally(setloading(false));
   }
-  // getSong(options).then((song) => console.log(song.albumArt, song.lyrics));
 
   return (
     <>
@@ -77,6 +58,7 @@ const Music = () => {
                     setSearchSong(event.target.value);
                   }}
                   placeholder="Search the Song"
+                  style={{ borderRadius: "40px" }}
                 />
               </Col>
               <Col lg={4} className="mx-2 my-2 p-2">
@@ -86,6 +68,7 @@ const Music = () => {
                     setSearchArtist(event.target.value);
                   }}
                   placeholder="Search the Artist"
+                  style={{ borderRadius: "40px" }}
                 />
               </Col>
             </Col>
@@ -96,7 +79,6 @@ const Music = () => {
               onClick={() => {
                 ShowMusic();
                 console.log(musicdata);
-                //setloading(true);
               }}
               disabled={loading}
             >
@@ -114,8 +96,12 @@ const Music = () => {
               />
             )}
           </div>
-          <div style={{ fontWeight: "bold" }}>{musicdata[1]}</div>
-          <div style={{ whiteSpace: "pre-wrap" }}>{musicdata[2]}</div>
+          <div style={{ fontWeight: "bold", color: "white" }}>
+            {musicdata[1]}
+          </div>
+          <div style={{ whiteSpace: "pre-wrap", color: "white" }}>
+            {musicdata[2]}
+          </div>
         </>
       )}
     </>

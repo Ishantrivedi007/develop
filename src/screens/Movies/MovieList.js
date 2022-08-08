@@ -1,85 +1,16 @@
 import React, { useState, useEffect } from "react";
-import {
-  getLatestMovies,
-  //getMovieList,
-  getNowPlayingMovies,
-  getPopularMoviesList,
-  getTopRatedMovies,
-  getUpcomingMovies,
-  // getMostPopularTVSeries,
-  getTopRatedTVSeries,
-} from "./Movies.services";
-import {
-  Container,
-  Table,
-  Card,
-  Carousel,
-  Button,
-  Col,
-  CardGroup,
-  Form,
-  Modal,
-  Spinner,
-} from "react-bootstrap";
-import moment from "moment";
-import Slider from "react-slick";
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  BarChart,
-  Bar,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import { getNowPlayingMovies } from "./Movies.services";
+import { Container, Card, Col, CardGroup, Spinner } from "react-bootstrap";
 import "./Movies.styles.css";
-//import { useHistory } from "react-router-dom";
-import { useParams } from "react-router";
 
 const MovieList = () => {
-  const { id } = useParams();
-  const action = window.location.pathname.split("/")[3];
-  //const history = useHistory();
-  const [moviedata, setMovieData] = useState([]);
-  const [popularMoviesdata, setPopularMovieData] = useState([]);
-  const [upcomingMoviesdata, setUpcomingMoviesData] = useState([]);
-  const [topRatedMoviesdata, setTopRatedMoviesData] = useState([]);
   const [nowPlayingMoviesdata, setNowPlayingMoviesData] = useState([]);
-  const [latestMoviesdata, setLatestMoviesData] = useState([]);
-  const [mostPopularTVSeries, setMostPopularTVSeries] = useState([]);
-  const [topRatedTVSeries, setTopRatedTVSeries] = useState([]);
-  const [index, setIndex] = useState(0);
-  const [show, setShow] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const handleCloseOne = () => setIsOpen(false);
-  const handleShowOne = () => setIsOpen(true);
-  const handleCloseTwo = () => setShowModal(false);
-  const handleShowTwo = () => setShowModal(true);
-  const handleCloseThree = () => setOpen(false);
-  const handleShowThree = () => setOpen(true);
-  const handleSelect = (selectedIndex, e) => {
-    setIndex(selectedIndex);
-  };
-
   useEffect(() => {
-    //getMovieList(setMovieData);
-    getPopularMoviesList(setPopularMovieData);
-    getLatestMovies(setLatestMoviesData);
     getNowPlayingMovies(setNowPlayingMoviesData, setLoading);
-    getUpcomingMovies(setUpcomingMoviesData);
-    getTopRatedMovies(setTopRatedMoviesData);
-    //getMostPopularTVSeries(setMostPopularTVSeries);
-    getTopRatedTVSeries(setTopRatedTVSeries);
   }, []);
+
   return (
     <>
       {loading ? (
@@ -88,11 +19,32 @@ const MovieList = () => {
         </Spinner>
       ) : (
         <div>
+          <Container>
+            <Col
+              className="my-2 mx-2"
+              style={{
+                alignItems: "center",
+                alignContent: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 30,
+                  fontWeight: "bolder",
+                  fontStyle: "italic",
+                  color: "white",
+                }}
+              >
+                <u>Our Movie Showcase</u>
+              </span>
+            </Col>
+          </Container>
           <CardGroup className="mx-5 my-5">
             {nowPlayingMoviesdata.map((entry, index) => (
               <Col style={{ display: "flex" }}>
                 <Col lg={3} className="mx-2 my-2">
-                  <Card style={{ width: "18rem" }}>
+                  <Card style={{ width: "18rem", borderRadius: "40px" }}>
                     <Card.Img
                       variant="top"
                       src={
